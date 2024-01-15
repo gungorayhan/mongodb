@@ -14,6 +14,7 @@
  * $currentDate
  * $pop
  * $addToSet
+ * elemMatch
 */
 
 // db.<collection>.method(<method>,<update>,<options>)
