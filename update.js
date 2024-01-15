@@ -154,18 +154,18 @@
 
 //-------------------currentDate----------------------
 
-db.shoppingCart.updateMany(
-    {cartId:123},
-    {
-        $set:{
-            cart:["item1","item2"]
-        },
-        $currentDate:{
-            updatedAt:true
-        }
-    },
-    {}
-)
+// db.shoppingCart.updateMany(
+//     { cartId: 123 },
+//     {
+//         $set: {
+//             cart: ["item1", "item2"]
+//         },
+//         $currentDate: {
+//             updatedAt: true
+//         }
+//     },
+//     {}
+// )
 
 //-----------------array update-------------
 
@@ -201,3 +201,138 @@ db.shoppingCart.updateMany(
 //         }
 //     }
 // )
+
+//----------------------pop-----------------
+// db.shoppingCart.update(
+//     {cartId:561,},
+//     {
+//         $pop: {
+//             cart:1 // +1 ile diznin son öğesinin silindiğini göreceğiz eğer -1 değerini girmiş olsaydık dizinin ilk öğesinin silindiğini görecektik
+//         }
+//     },
+//     {}
+// )
+
+//---------------------pull------------------
+// db.posts.update(
+//     { _id: 1 },
+//     {
+//       $pull: {
+//         tags: "mongodb"
+//       }
+//     }
+//);
+// Bu komut, "_id" alanı 1 olan belge içindeki "tags" dizisinden "mongodb" etiketini çıkarır.
+
+// db.students.update(
+//     { _id: 1 },
+//     {
+//       $pull: {
+//         scores: { $gte: 80 }
+//       }
+//     }
+//   );
+//Bu komut, "_id" alanı 1 olan belge içindeki "scores" dizisinden 80 veya daha büyük değerlere sahip olan skorları çıkarır.
+
+//---------------------------pullAll------------------
+// {$pull:{arrayfield:["value1","value2"]}}
+
+// öncelikle sorgumuzu gerçekleştirmek için veri eklemesi yapacağız
+// db.getCollection("shoppingCart").update(
+//     {cartId:561},
+//     {$push:{
+//         cart:{$each:["item1","item2","item3","item4","item1"]}
+//     }}
+// )
+
+// db.getCollection("shoppingCart").update(
+//     {cartId:561},
+//     {
+//         $pullAll:{
+//             cart:["item1","item2"] // belirtilen tüm değerker cart dizisinden kaldırılacaktır
+//         }
+//     }
+// )
+
+//--------------------positional operator
+// db.getCollection("shoppingCart")
+// .updateOne(
+//     {
+//         cartId:561,cart:"item3"
+//     },
+//     {
+//         $unset:{
+//             "cart.$": 1 // dizide ilgili elemanın silemz yerine null atar. bununla birlikte dizinin boyutuda değişmemiş olur
+//         }
+//     },
+//     {}
+// )
+
+
+// db.getCollection("shoppingCart")
+// .udpdateOne(
+//     {cartId:561,cart:"item2"},
+//     {
+//         $set:{
+//             "cart.$":"item2updated" // sorgu sonucunda gelen dizi değerinin 2. elemanını güncellemiş olduk
+//         }
+//     }
+// )
+
+//--------nested doc
+// {
+//     cart:[
+//         {
+//             title:"TV",
+//             price:NumberInt(340),
+//             quantity:NumberInt(2)
+//         },
+//         {
+//             title:"Phone",
+//             price:NumberInt(150),
+//             quantity:NumberInt(1)
+//         }
+//     ]
+// }
+
+
+// db.shoppingCart.updatedOne(
+//     {"cart.title":"Phone"},
+//     {
+//         $set:{
+//             "cart.$.quantity":NumberInt(2)
+//         }
+//     }
+// )
+
+//birden fazla sorgu değeri için
+// db.shoppingCart.updateOne(
+//     {
+//         cartId: 456,
+//         cart:{$elemMatch:{title:"Phone",price:150}}
+//     },
+//     {
+//         $set:{
+//             "cart.$.quantity":NumberInt(2),
+//             "cart.$.price":NumberInt(225)
+//         }
+//     }
+// )
+
+
+//----------------------inc--------------------
+// {$inc:{field:amount}}
+
+// db.shoppingCart.updateOne(
+//     {
+//         cartId: 456,
+//         cart:{$elemMatch:{title:"Phone",price:150}}
+//     },
+//     {
+//         $inc:{
+//             "cart.$.quantity":NumberInt(2), // her defasında değeri belirlen kadar arttırır
+//         }
+//     }
+// )
+
+//------------------------------------------------
